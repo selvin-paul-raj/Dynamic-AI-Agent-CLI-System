@@ -1,0 +1,94 @@
+flows:
+  search:
+    name: "Web Search Flow"
+    description: "Performs web search using Serper API"
+    tags: ["search", "web", "google"]
+    nodes:
+      - name: "search"
+        type: "SearchNode"
+        next: "output"
+      - name: "output"
+        type: "OutputNode"
+        next: null
+    input_schema:
+      query:
+        type: "string"
+        required: true
+        description: "Search query"
+      num_results:
+        type: "integer"
+        required: false
+        default: 5
+        description: "Number of results to return"
+
+  llm:
+    name: "LLM Chat Flow"
+    description: "Calls Google Gemini for text generation"
+    tags: ["llm", "gemini", "chat", "ai"]
+    nodes:
+      - name: "llm"
+        type: "LLMNode"
+        next: "output"
+      - name: "output"
+        type: "OutputNode"
+        next: null
+    input_schema:
+      prompt:
+        type: "string"
+        required: true
+        description: "User prompt for the LLM"
+      system_message:
+        type: "string"
+        required: false
+        description: "System message to guide the LLM"
+
+  math:
+    name: "Math Operations Flow"
+    description: "Performs mathematical calculations"
+    tags: ["math", "calculate", "arithmetic"]
+    nodes:
+      - name: "math"
+        type: "MathNode"
+        next: "output"
+      - name: "output"
+        type: "OutputNode"
+        next: null
+    input_schema:
+      operation:
+        type: "string"
+        required: true
+        enum: ["add", "subtract", "multiply", "divide", "power", "modulo"]
+        description: "Mathematical operation to perform"
+      operands:
+        type: "array"
+        required: true
+        items:
+          type: "number"
+        description: "List of numbers to operate on"
+
+# Routing rules for automatic flow detection
+routing:
+  patterns:
+    search:
+      - "search for"
+      - "find information"
+      - "look up"
+      - "google"
+      - "web search"
+    llm:
+      - "explain"
+      - "tell me about"
+      - "what is"
+      - "generate"
+      - "write"
+    math:
+      - "calculate"
+      - "add"
+      - "subtract"
+      - "multiply"
+      - "divide"
+      - "math"
+      - "+"
+      - "-"
+      - "*"
+      - "/"
