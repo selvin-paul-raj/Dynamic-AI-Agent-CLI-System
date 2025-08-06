@@ -14,6 +14,24 @@
 
 </div>
 
+## ⚡ Quick Start
+
+Want to try it right now? Here's the fastest way:
+
+```bash
+# Clone and run in 30 seconds!
+git clone https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System.git
+cd Dynamic-AI-Agent-CLI-System
+uv sync
+python main.py setup
+# Add your API keys to .env file
+python main.py interactive
+```
+
+> 🔑 **Need API Keys?** Get free keys from [Google AI](https://makersuite.google.com/app/apikey) and [Serper](https://serper.dev/)
+
+---
+
 ## 🖼️ Visual Overview
 
 <div align="center">
@@ -167,12 +185,15 @@ graph TD
 ### 📁 Project Structure
 
 ```
-dynamic-ai-agent/
+Dynamic-AI-Agent-CLI-System/
 ├── 📜 .env                     # Environment variables & API keys
+├── 📜 .env.example             # Environment template file
 ├── 🧠 agent.py                 # Core agent orchestrator
 ├── 🖥️  main.py                 # CLI interface & commands
 ├── 📊 state.py                 # Pydantic models & type definitions
 ├── 📋 pyproject.toml           # Python dependencies & metadata
+├── 📋 requirements.txt         # Production dependencies
+├── 📋 requirements-dev.txt     # Development dependencies
 ├── 📚 README.md                # This comprehensive guide
 │
 ├── 📁 configs/
@@ -189,6 +210,11 @@ dynamic-ai-agent/
 │   ├── 🔍 search_flow.png      # Search flow diagram
 │   ├── 🤖 llm_flow.png         # LLM flow diagram
 │   └── 🧮 math_flow.png        # Math flow diagram
+│
+├── 📁 public/                  # Output screenshots & demos
+│   ├── 📸 interactive.png      # Interactive mode demo
+│   ├── 📸 list-flows.png       # Flow listing demo
+│   └── 📸 test.png             # Test suite demo
 │
 └── 📁 tests/                   # Comprehensive test suite
     ├── 🧪 test_flows.py        # Flow integration tests
@@ -207,42 +233,90 @@ dynamic-ai-agent/
 ### ⚡ Installation
 
 <details>
-<summary><b>🔧 Automated Setup (Recommended)</b></summary>
+<summary><b>� Quick Clone & Run (Recommended)</b></summary>
 
 ```bash
-# 1. Initialize project structure
-python main.py setup
+# 1. Clone the repository
+git clone https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System.git
+cd Dynamic-AI-Agent-CLI-System
 
 # 2. Install dependencies with uv (recommended)
 uv sync
 
-# 3. Configure API keys in .env file
-# 4. Validate setup
+# 3. Configure API keys (create .env file)
+cp .env.example .env
+# Edit .env with your API keys
+
+# 4. Initialize and validate setup
+python main.py setup
 python main.py validate-config
+
+# 5. Start using the agent!
+python main.py interactive
 ```
 
 </details>
 
 <details>
-<summary><b>📦 Manual Installation</b></summary>
+<summary><b>� Step-by-Step Setup</b></summary>
 
 ```bash
-# 1. Clone/setup project
-git clone <repository-url>
-cd dynamic-ai-agent
+# 1. Clone the repository
+git clone https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System.git
+cd Dynamic-AI-Agent-CLI-System
 
-# 2. Install with uv (recommended)
-uv add langchain langchain-google-genai langgraph pydantic typer python-dotenv pyyaml httpx rich matplotlib networkx graphviz pillow
+# 2. Create virtual environment (optional but recommended)
+python -m venv venv
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
 
-# Or with pip
+# 3. Install dependencies
+# Option A: Using uv (recommended)
+uv sync
+
+# Option B: Using pip with requirements.txt
+pip install -r requirements.txt
+
+# Or install individual packages:
 pip install langchain langchain-google-genai langgraph pydantic typer python-dotenv pyyaml httpx rich matplotlib networkx graphviz pillow
+
+# 4. Initialize project structure
+python main.py setup
+```
+
+</details>
+
+<details>
+<summary><b>📦 Alternative Installation Methods</b></summary>
+
+**Using pip directly:**
+```bash
+# Clone repository
+git clone https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System.git
+cd Dynamic-AI-Agent-CLI-System
+
+# Install all dependencies at once
+pip install langchain langchain-google-genai langgraph pydantic typer python-dotenv pyyaml httpx rich matplotlib networkx graphviz pillow
+```
+
+**Using poetry:**
+```bash
+# Clone repository
+git clone https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System.git
+cd Dynamic-AI-Agent-CLI-System
+
+# Install with poetry
+poetry install
+poetry shell
 ```
 
 </details>
 
 ### 🔑 API Configuration
 
-Create a `.env` file with your API keys:
+Create a `.env` file with your API keys (you can copy from `.env.example`):
 
 ```env
 # Google AI Platform (Required for LLM)
@@ -254,6 +328,13 @@ SERPER_API_KEY=your_serper_api_key_here
 # Optional: Advanced Configuration
 LANGCHAIN_TRACING_V2=true
 LANGCHAIN_API_KEY=your_langchain_api_key
+```
+
+**Quick Setup:**
+```bash
+# Copy the example file and edit with your keys
+cp .env.example .env
+# Edit .env with your actual API keys
 ```
 
 <details>
@@ -269,18 +350,44 @@ LANGCHAIN_API_KEY=your_langchain_api_key
 
 ### ✅ Verification
 
+Test that everything is working correctly:
+
 ```bash
-# Validate configuration
+# Navigate to project directory (if not already there)
+cd Dynamic-AI-Agent-CLI-System
+
+# Validate your configuration
 python main.py validate-config
 
-# Run test suite
+# Run the comprehensive test suite
 python main.py test
 
-# Generate flow diagrams
+# Generate beautiful flow diagrams
 python main.py visualize
+
+# Start interactive mode
+python main.py interactive
 ```
 
 > 🎯 **Pro Tip**: See real terminal output examples in our [📸 Real Output Screenshots](#-real-output-screenshots) section!
+
+### 🎮 First Commands to Try
+
+Once you have the project running, try these commands:
+
+```bash
+# 🔍 Search the web
+python main.py run "search for latest Python tutorials"
+
+# 🤖 Chat with AI
+python main.py run "explain quantum computing simply"
+
+# 🧮 Do math
+python main.py run "calculate 15 * 23 + 47"
+
+# 📊 See all available flows
+python main.py list-flows
+```
 
 ## 🎯 Usage Examples
 
@@ -1037,18 +1144,22 @@ We welcome contributions! Here's how to get started:
 ### 🚀 Development Setup
 
 ```bash
-# 1. Fork the repository
-git clone https://github.com/your-username/dynamic-ai-agent.git
-cd dynamic-ai-agent
+# 1. Fork and clone the repository
+git clone https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System.git
+cd Dynamic-AI-Agent-CLI-System
 
 # 2. Set up development environment
 python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
 
 # 3. Install development dependencies
 uv sync --dev
 
-# 4. Set up pre-commit hooks
+# 4. Set up pre-commit hooks (optional)
+pip install pre-commit
 pre-commit install
 
 # 5. Run tests to verify setup
@@ -1125,6 +1236,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 **Made with ❤️ by [Selvin PaulRaj K](https://github.com/selvin-paul-raj)**
 
-[⭐ Star this project](https://github.com/your-username/dynamic-ai-agent) • [🐛 Report Issues](https://github.com/your-username/dynamic-ai-agent/issues) • [💡 Request Features](https://github.com/your-username/dynamic-ai-agent/discussions)
+[⭐ Star this project](https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System) • [🐛 Report Issues](https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System/issues) • [💡 Request Features](https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System/discussions)
 
 </div>
