@@ -1,0 +1,125 @@
+# Dynamic AI Agent CLI System - Docker Compose Configuration
+version: '3.8'
+
+services:
+  # Production service
+  dynamic-ai-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: dynamic-ai-agent-prod
+    restart: unless-stopped
+    environment:
+      # Load from .env file
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - SERPER_API_KEY=${SERPER_API_KEY}
+      - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-false}
+      - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ENABLE_METRICS=${ENABLE_METRICS:-false}
+    volumes:
+      # Persist diagrams and logs
+      - ./diagrams:/app/diagrams
+      - ./logs:/app/logs
+      - ./data:/app/data
+    ports:
+      - "8080:8080"  # Metrics port
+    networks:
+      - ai-agent-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Development service
+  dynamic-ai-agent-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: dynamic-ai-agent-dev
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - SERPER_API_KEY=${SERPER_API_KEY}
+      - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2:-false}
+      - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY}
+      - DEBUG=true
+      - DEVELOPMENT_MODE=true
+      - LOG_LEVEL=DEBUG
+    volumes:
+      # Mount source code for hot reload
+      - .:/app
+      - ai-agent-cache:/root/.cache
+    ports:
+      - "8080:8080"  # Metrics port
+      - "5555:5555"  # Development port
+    networks:
+      - ai-agent-network
+    stdin_open: true
+    tty: true
+    profiles:
+      - dev
+
+  # Optional: Redis for caching (future enhancement)
+  redis:
+    image: redis:7-alpine
+    container_name: ai-agent-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - ai-agent-network
+    profiles:
+      - cache
+
+  # Optional: Prometheus for metrics monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ai-agent-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - ai-agent-network
+    profiles:
+      - monitoring
+
+  # Optional: Grafana for metrics visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ai-agent-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana:/etc/grafana/provisioning
+    networks:
+      - ai-agent-network
+    profiles:
+      - monitoring
+
+networks:
+  ai-agent-network:
+    driver: bridge
+
+volumes:
+  ai-agent-cache:
+  redis-data:
+  prometheus-data:
+  grafana-data:

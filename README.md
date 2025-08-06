@@ -5,12 +5,13 @@
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![LangGraph](https://img.shields.io/badge/LangGraph-0.6+-green.svg)](https://python.langchain.com/docs/langgraph)
 [![LangChain](https://img.shields.io/badge/LangChain-0.3+-orange.svg)](https://python.langchain.com/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Pydantic](https://img.shields.io/badge/Pydantic-2.0+-red.svg)](https://pydantic.dev/)
 
 *A production-grade, multi-flow AI agent system with intelligent routing, visual flow diagrams, and enterprise-ready architecture*
 
-[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation) • [🏗️ Architecture](#️-architecture) • [🎯 Examples](#-examples) • [🤝 Contributing](#-contributing)
+[🚀 Quick Start](#-quick-start) • [🐳 Docker](#-docker-deployment) • [📖 Documentation](#-documentation) • [🏗️ Architecture](#️-architecture) • [🎯 Examples](#-examples) • [🤝 Contributing](#-contributing)
 
 </div>
 
@@ -18,8 +19,20 @@
 
 Want to try it right now? Here's the fastest way:
 
+**🐳 With Docker (Recommended for Production):**
 ```bash
-# Clone and run in 30 seconds!
+# Clone and run with Docker in 20 seconds!
+git clone https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System.git
+cd Dynamic-AI-Agent-CLI-System
+cp .env.docker .env
+# Add your API keys to .env file
+docker-compose up -d
+docker-compose exec dynamic-ai-agent python main.py interactive
+```
+
+**🖥️ Local Installation:**
+```bash
+# Clone and run locally
 git clone https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System.git
 cd Dynamic-AI-Agent-CLI-System
 uv sync
@@ -141,6 +154,7 @@ python main.py interactive
 ### 🔧 **Developer Experience**
 - **Interactive Mode**: Real-time agent interaction
 - **CLI Commands**: Rich command-line interface
+- **Docker Ready**: Production & development containers
 - **Hot Reload**: Dynamic configuration updates
 - **Testing Suite**: Built-in test framework
 - **Documentation**: Comprehensive guides & examples
@@ -188,6 +202,12 @@ graph TD
 Dynamic-AI-Agent-CLI-System/
 ├── 📜 .env                     # Environment variables & API keys
 ├── 📜 .env.example             # Environment template file
+├── 📜 .env.docker              # Docker environment template
+├── 🐳 Dockerfile               # Production Docker image
+├── 🐳 Dockerfile.dev           # Development Docker image
+├── 🐳 docker-compose.yml       # Docker Compose configuration
+├── 🐳 docker-entrypoint.sh     # Container startup script
+├── 📜 .dockerignore            # Docker build exclusions
 ├── 🧠 agent.py                 # Core agent orchestrator
 ├── 🖥️  main.py                 # CLI interface & commands
 ├── 📊 state.py                 # Pydantic models & type definitions
@@ -347,6 +367,296 @@ cp .env.example .env
 | **LangSmith** | Observability (optional) | [smith.langchain.com](https://smith.langchain.com/) | ✅ Yes |
 
 </details>
+
+## 🐳 Docker Deployment
+
+Run the Dynamic AI Agent in a containerized environment for production or development.
+
+### 🚀 Quick Docker Start
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/selvin-paul-raj/Dynamic-AI-Agent-CLI-System.git
+cd Dynamic-AI-Agent-CLI-System
+
+# 2. Set up environment variables
+cp .env.docker .env
+# Edit .env with your API keys
+
+# 3. Run with Docker Compose (recommended)
+docker-compose up -d
+
+# 4. Access the agent
+docker-compose exec dynamic-ai-agent python main.py interactive
+```
+
+### 🔧 Docker Installation Methods
+
+<details>
+<summary><b>🐳 Production Deployment</b></summary>
+
+**Using Docker Compose (Recommended):**
+```bash
+# Build and run production container
+docker-compose up -d dynamic-ai-agent
+
+# View logs
+docker-compose logs -f dynamic-ai-agent
+
+# Access interactive mode
+docker-compose exec dynamic-ai-agent python main.py interactive
+
+# Run specific commands
+docker-compose exec dynamic-ai-agent python main.py run "search for AI news"
+
+# Stop the service
+docker-compose down
+```
+
+**Using Docker directly:**
+```bash
+# Build the production image
+docker build -t dynamic-ai-agent:latest .
+
+# Run the container
+docker run -d \
+  --name dynamic-ai-agent \
+  -e GOOGLE_API_KEY=your_key_here \
+  -e SERPER_API_KEY=your_key_here \
+  -v $(pwd)/diagrams:/app/diagrams \
+  -v $(pwd)/logs:/app/logs \
+  -p 8080:8080 \
+  dynamic-ai-agent:latest
+
+# Access interactive mode
+docker exec -it dynamic-ai-agent python main.py interactive
+```
+
+</details>
+
+<details>
+<summary><b>🛠️ Development Environment</b></summary>
+
+**Using Docker Compose:**
+```bash
+# Start development container with hot reload
+docker-compose --profile dev up -d dynamic-ai-agent-dev
+
+# Access development container
+docker-compose exec dynamic-ai-agent-dev bash
+
+# Run tests in container
+docker-compose exec dynamic-ai-agent-dev python main.py test
+
+# View development logs
+docker-compose logs -f dynamic-ai-agent-dev
+```
+
+**Using Docker directly:**
+```bash
+# Build development image
+docker build -f Dockerfile.dev -t dynamic-ai-agent:dev .
+
+# Run development container
+docker run -it \
+  --name dynamic-ai-agent-dev \
+  -e GOOGLE_API_KEY=your_key_here \
+  -e SERPER_API_KEY=your_key_here \
+  -e DEBUG=true \
+  -v $(pwd):/app \
+  -p 8080:8080 \
+  -p 5555:5555 \
+  dynamic-ai-agent:dev bash
+```
+
+</details>
+
+<details>
+<summary><b>🏗️ Build Options</b></summary>
+
+**Multi-stage Production Build:**
+```bash
+# Build optimized production image
+docker build --target production -t dynamic-ai-agent:prod .
+
+# Build with custom build args
+docker build \
+  --build-arg PYTHON_VERSION=3.12 \
+  --target production \
+  -t dynamic-ai-agent:custom .
+```
+
+**Development Build:**
+```bash
+# Build development image with all tools
+docker build -f Dockerfile.dev -t dynamic-ai-agent:dev .
+
+# Build with cache mount for faster rebuilds
+docker build \
+  --target builder \
+  -t dynamic-ai-agent:builder .
+```
+
+</details>
+
+### 🔧 Docker Configuration
+
+<details>
+<summary><b>📋 Environment Variables</b></summary>
+
+**Required Variables:**
+```env
+# API Keys (Required)
+GOOGLE_API_KEY=your_google_api_key_here
+SERPER_API_KEY=your_serper_api_key_here
+
+# Container Behavior
+RUN_SETUP=false              # Run setup on container start
+SKIP_VALIDATION=false        # Skip config validation
+STRICT_VALIDATION=false      # Exit on validation failure
+RUN_TESTS=false             # Run tests on startup
+GENERATE_DIAGRAMS=true      # Generate flow diagrams
+```
+
+**Optional Variables:**
+```env
+# Observability
+LANGCHAIN_TRACING_V2=false
+LANGCHAIN_API_KEY=your_langsmith_key
+
+# Performance
+LOG_LEVEL=INFO
+ENABLE_METRICS=false
+METRICS_PORT=8080
+
+# Development
+DEBUG=false
+DEVELOPMENT_MODE=false
+```
+
+</details>
+
+<details>
+<summary><b>🗄️ Volume Mounts</b></summary>
+
+**Persistent Data:**
+```bash
+# Diagrams (auto-generated flow charts)
+-v $(pwd)/diagrams:/app/diagrams
+
+# Logs (application logs)
+-v $(pwd)/logs:/app/logs
+
+# Data (persistent data storage)
+-v $(pwd)/data:/app/data
+
+# Configuration (custom configs)
+-v $(pwd)/configs:/app/configs
+```
+
+**Development Mounts:**
+```bash
+# Source code (for hot reload)
+-v $(pwd):/app
+
+# Cache (faster dependency installs)
+-v ai-agent-cache:/root/.cache
+```
+
+</details>
+
+### 🚀 Advanced Docker Features
+
+<details>
+<summary><b>🔄 Service Orchestration</b></summary>
+
+**Enable Optional Services:**
+```bash
+# Enable caching with Redis
+COMPOSE_PROFILES=cache docker-compose up -d
+
+# Enable monitoring with Prometheus & Grafana
+COMPOSE_PROFILES=monitoring docker-compose up -d
+
+# Enable multiple profiles
+COMPOSE_PROFILES=dev,cache,monitoring docker-compose up -d
+```
+
+**Service Endpoints:**
+- **Agent**: http://localhost:8080 (metrics)
+- **Grafana**: http://localhost:3000 (admin/admin)
+- **Prometheus**: http://localhost:9090
+- **Redis**: localhost:6379
+
+</details>
+
+<details>
+<summary><b>🔍 Health Checks & Monitoring</b></summary>
+
+**Health Check:**
+```bash
+# Check container health
+docker ps
+docker inspect dynamic-ai-agent --format='{{.State.Health.Status}}'
+
+# View health check logs
+docker inspect dynamic-ai-agent --format='{{range .State.Health.Log}}{{.Output}}{{end}}'
+```
+
+**Resource Monitoring:**
+```bash
+# View resource usage
+docker stats dynamic-ai-agent
+
+# View detailed logs
+docker-compose logs -f --tail=100 dynamic-ai-agent
+```
+
+</details>
+
+<details>
+<summary><b>🛡️ Security Best Practices</b></summary>
+
+**Container Security:**
+- ✅ Non-root user execution
+- ✅ Minimal base image (Python slim)
+- ✅ Multi-stage builds
+- ✅ Secrets via environment variables
+- ✅ Health checks enabled
+- ✅ Resource limits configured
+
+**Production Recommendations:**
+```bash
+# Run with resource limits
+docker run \
+  --memory=1g \
+  --cpus=1.0 \
+  --security-opt=no-new-privileges \
+  --read-only \
+  --tmpfs /tmp \
+  dynamic-ai-agent:latest
+```
+
+</details>
+
+### 🎯 Docker Quick Commands
+
+```bash
+# Development workflow
+docker-compose --profile dev up -d     # Start dev environment
+docker-compose exec dynamic-ai-agent-dev bash  # Access container
+docker-compose down                     # Stop all services
+
+# Production deployment
+docker-compose up -d                    # Start production
+docker-compose exec dynamic-ai-agent python main.py interactive  # Use agent
+docker-compose logs -f                  # View logs
+
+# Maintenance
+docker-compose pull                     # Update images
+docker-compose build --no-cache        # Rebuild images
+docker system prune -a                 # Clean up Docker
+```
 
 ### ✅ Verification
 
